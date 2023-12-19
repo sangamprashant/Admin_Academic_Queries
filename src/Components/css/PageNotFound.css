@@ -1,0 +1,36 @@
+.not-found-container {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+.not-found-text {
+  font-size: 32px;
+  text-align: center;
+}
+
+.not-found-container .go-to-home {
+  border-radius: 50px;
+  background-color: aqua;
+}
+.not-found-background {
+  background-color: rgb(236, 232, 232);
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+
+.project-input-image{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-gap: 10px;
+}
+
+.project-input-image img {
+  max-width: 100px;
+  max-height: 100px;
+  width: 100%; 
+  height: 100%;
+}
