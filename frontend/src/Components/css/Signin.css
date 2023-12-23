@@ -1,0 +1,77 @@
+.signin{
+    background-color: black;
+}
+
+.contact .signin {
+    width: 100%;
+    padding: 40px;
+    background: #4d4d4d;
+    border-radius: 4px;
+  }
+  
+  .contact .signin .form-group {
+    padding-bottom: 8px;
+  }
+
+
+  
+  .contact .signin .loading {
+    display: none;
+    background: #fff;
+    text-align: center;
+    padding: 15px;
+  }
+  
+  .contact .signin .loading:before {
+    content: "";
+    display: inline-block;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    margin: 0 10px -6px 0;
+    border: 3px solid #18d26e;
+    border-top-color: #eee;
+    animation: animate-loading 1s linear infinite;
+  }
+  
+  .contact .signin input,
+  .contact .signin textarea {
+    border-radius: 0;
+    box-shadow: none;
+    font-size: 14px;
+  }
+  
+  .contact .signin input {
+    height: 44px;
+  }
+  
+  .contact .signin textarea {
+    padding: 10px 12px;
+  }
+  
+  .contact .signin button[type="button"] {
+    background: #3498db;
+    border: 0;
+    padding: 10px 24px;
+    color: #fff;
+    transition: 0.4s;
+    border-radius: 4px;
+  }
+  
+  .contact .signin button[type="button"]:hover {
+    background: #5faee3;
+  }
+  
+  @keyframes animate-loading {
+    0% {
+      transform: rotate(0deg);
+    }
+  
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .forgot_password{
+    color: #3498db;
+  }
