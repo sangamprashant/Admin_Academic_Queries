@@ -21,6 +21,7 @@ import AddProject from "./Components/ReuseComponent/AddProject";
 import AdminProjectHome from "./Components/ReuseComponent/AdminProjectHome";
 import AdminProjectLanguageSelected from "./Components/ReuseComponent/AdminProjectLanguageSelected";
 import AdminNav from "./Components/ReuseComponent/AdminNav";
+import TokenVerifification from "./Components/ReuseComponent/TokenVerifification";
 
 function App() {
   const [userLogin, setUserLogin] = useState(false);
@@ -52,6 +53,7 @@ function App() {
           <Routes>
             <Route exact path="/" element={<Signin/>}/>
             <Route exact path="/forgot/password" element={<ForgotPassword />}/>
+            <Route exact path="/verify/:token" element={<TokenVerifification />}/>
           </Routes>
         )}
         <ToastContainer theme="dark" />

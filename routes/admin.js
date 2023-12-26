@@ -65,7 +65,7 @@ const sendVerificationEmail = async (email, token) => {
     from: "academicquries.me@gmail.com",
     to: email,
     subject: "Email Verification",
-    html: `<p>Please click <a href="${process.env.DOMAIN}/api/verify/${token}">here</a> to verify your email.</p>`,
+    html: `<p>Please click <a href="${process.env.DOMAIN}/verify/${token}">here</a> to verify your email.</p>`,
   };
 
   return new Promise((resolve, reject) => {
@@ -82,6 +82,8 @@ const sendVerificationEmail = async (email, token) => {
 };
 
 router.post("/api/verify/:token", async (req, res) => {
+  console.log(req.params.token)
+  return
   try {
     const { token } = req.params;
     const { password } = req.body;
