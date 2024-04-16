@@ -60,14 +60,14 @@ function AdminNav() {
       variant="dark"
       className=" position-fixed w-100 z-3 px-4"
     >
-      <Navbar.Brand as={Link} to="/" style={{ color: "white" }}>
+      <Navbar.Brand as={Link} to="/" className=" text-white" style={{fontSize:"30px"}}> 
         Academic Queries
       </Navbar.Brand>
       <Navbar.Toggle
         onClick={() => setIsOpen(!isOpen)} // Toggle Navbar when clicked
         aria-controls="admin-navbar"
       />
-      <Navbar.Collapse id="admin-navbar" className="justify-content-evenly">
+      <Navbar.Collapse id="admin-navbar" className="justify-content-end">
         <Nav className="mr-auto">
           {dropdownData.map((dropdown, index) => (
             <NavDropdown
@@ -82,8 +82,6 @@ function AdminNav() {
               ))}
             </NavDropdown>
           ))}
-        </Nav>
-        <Nav>
           <Nav.Link
             onClick={() => {
               handleLogout();

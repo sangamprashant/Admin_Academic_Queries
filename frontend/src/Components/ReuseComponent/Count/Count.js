@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import "../css/Count.css";
+import "../../css/Count.css";
+import CountDisplay from "./CountDisplay";
 
 function Count() {
   const [count, setCount] = useState(0);
   const [visitors, setVisitors] = useState(0);
 
-  useEffect(() => {
+  React.useLayoutEffect(() => {
     // Fetch the count of valid question papers
     fetch(
       `${process.env.REACT_APP_GLOBAL_LINK}/api/count/valid-question-papers`
@@ -40,7 +41,7 @@ function Count() {
     }
   }, []); // Empty dependency array to run the effect only once on page load
 
-  useEffect(() => {
+  React.useLayoutEffect(() => {
     // Fetch the count of visitors
     fetch(`${process.env.REACT_APP_GLOBAL_LINK}/api/count/visitors`)
       .then((response) => response.json())
@@ -52,49 +53,15 @@ function Count() {
       });
   }, []);
 
-  useEffect(() => {
-    // Clear the flag after 10 seconds
-    setTimeout(() => {
-      localStorage.removeItem("postRequestSent");
-    }, 10000);
-  }, []); // Empty dependency array to run the effect only once on page load
-
   return (
     <div>
       <section id="counts" className="counts">
         <div className="container">
           <div className="row">
-            <div className="col-lg-3 col-6">
-              <div className="count-box">
-                <i className="fa fa-eye"></i>
-                <span>{visitors}</span>
-                <p>Number of visitors</p>
-              </div>
-            </div>
-
-            <div className="col-lg-3 col-6">
-              <div className="count-box">
-                <i className="fa fa-file-text"></i>
-                <span>{count}</span>
-                <p>Papers</p>
-              </div>
-            </div>
-
-            <div className="col-lg-3 col-6 mt-5 mt-lg-0">
-              <div className="count-box">
-                <i className="fa fa-headset"></i>
-                <span>24/7</span>
-                <p>Hours Of Support</p>
-              </div>
-            </div>
-
-            <div className="col-lg-3 col-6 mt-5 mt-lg-0">
-              <div className="count-box">
-                <i className="fa fa-user"></i>
-                <span>02</span>
-                <p>Developers</p>
-              </div>
-            </div>
+            <CountDisplay icon="eye" number={visitors} title="Number of visitors" />
+            <CountDisplay icon="file-text" number={count} title="Papers" />
+            <CountDisplay icon="headset" number="24/7" title="Hours Of Support" />
+            <CountDisplay icon="user" number={2} title="Developers" />
           </div>
         </div>
       </section>
