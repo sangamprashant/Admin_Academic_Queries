@@ -22,6 +22,9 @@ import AdminProjectHome from "./Components/ReuseComponent/AdminProjectHome";
 import AdminProjectLanguageSelected from "./Components/ReuseComponent/AdminProjectLanguageSelected";
 import AdminNav from "./Components/ReuseComponent/AdminNav";
 import TokenVerifification from "./Components/ReuseComponent/TokenVerifification";
+import AddSubject from "./Components/ReuseComponent/AddSubject";
+import UnverifiedNotes from "./Components/ReuseComponent/UnverifiedNotes";
+import VerifyNotes from "./Components/ReuseComponent/VerifyNotes";
 
 function App() {
   const [userLogin, setUserLogin] = useState(false);
@@ -47,6 +50,9 @@ function App() {
               <Route exact path="/admin/modify/:paperId" element={<GetPaperToAdmin />}/>
               <Route exact path="/admin/response/email/:emailId" element={<EmailToUser />}/>
               <Route exact path="/admin/projects/:language" element={<AdminProjectLanguageSelected/>}/>
+              <Route exact path="/admin/add/subject" element={<AddSubject/>}/>
+              <Route exact path="/admin/unverified/subject" element={<UnverifiedNotes/>}/>
+              <Route exact path="/admin/unverified/subject/:id" element={<VerifyNotes/>}/>
             </Routes>
           </>
         ) : (

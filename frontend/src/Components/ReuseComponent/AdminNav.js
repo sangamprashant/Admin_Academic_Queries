@@ -19,13 +19,49 @@ function AdminNav() {
     localStorage.clear();
     setUserLogin(false);
     navigate("/");
-    window.location.reload()
+    window.location.reload();
   };
 
+  const dropdownData = [
+    {
+      title: "Responses",
+      items: [{ label: "Responses", to: "/responses" }],
+    },
+    {
+      title: "Paper",
+      items: [
+        { label: "Add Paper", to: "/admin/upload" },
+        { label: "Add College/University", to: "/admin/add/type" },
+        { label: "Add Course", to: "/admin/add/course" },
+        { label: "Update Paper", to: "/admin/course" },
+      ],
+    },
+    {
+      title: "Course",
+      items: [
+        { label: "Add Projects", to: "/admin/add/project" },
+        { label: "Edit Projects", to: "/admin/edit/project" },
+        { label: "Add Project Language", to: "/admin/add/project/language" },
+      ],
+    },
+    {
+      title: "Subject",
+      items: [
+        { label: "Add Subject", to: "/admin/add/subject" },
+        { label: "Unverified Subject", to: "/admin/unverified/subject" },
+      ],
+    },
+  ];
+
   return (
-    <Navbar bg="dark" expand="lg" variant="dark" className=" position-fixed w-100 z-3 px-4">
+    <Navbar
+      bg="dark"
+      expand="lg"
+      variant="dark"
+      className=" position-fixed w-100 z-3 px-4"
+    >
       <Navbar.Brand as={Link} to="/" style={{ color: "white" }}>
-        Academic Quries
+        Academic Queries
       </Navbar.Brand>
       <Navbar.Toggle
         onClick={() => setIsOpen(!isOpen)} // Toggle Navbar when clicked
@@ -33,30 +69,19 @@ function AdminNav() {
       />
       <Navbar.Collapse id="admin-navbar" className="justify-content-evenly">
         <Nav className="mr-auto">
-          <Nav.Link as={Link} to="/admin/upload" style={{ color: "white" }}>
-            Add Paper
-          </Nav.Link>
-          <Nav.Link as={Link} to="/admin/add/type" style={{ color: "white" }}>
-            Add College/University
-          </Nav.Link>
-          <Nav.Link as={Link} to="/admin/add/course" style={{ color: "white" }}>
-            Add Course
-          </Nav.Link>
-          <Nav.Link as={Link} to="/admin/course" style={{ color: "white" }}>
-            Update Paper
-          </Nav.Link>
-          <Nav.Link as={Link} to="/responses" style={{ color: "white" }}>
-            Responses
-          </Nav.Link>
-          <Nav.Link as={Link} to="/admin/add/project" style={{ color: "white" }}>
-            Add Projects
-          </Nav.Link>
-          <Nav.Link as={Link} to="/admin/edit/project" style={{ color: "white" }}>
-            Edit Projects
-          </Nav.Link>
-          <Nav.Link as={Link} to="/admin/add/project/language" style={{ color: "white" }}>
-            Add Project Language
-          </Nav.Link>
+          {dropdownData.map((dropdown, index) => (
+            <NavDropdown
+              title={dropdown.title}
+              id={`dropdown-${index}`}
+              key={index}
+            >
+              {dropdown.items.map((item, idx) => (
+                <NavDropdown.Item as={Link} to={item.to} key={idx}>
+                  {item.label}
+                </NavDropdown.Item>
+              ))}
+            </NavDropdown>
+          ))}
         </Nav>
         <Nav>
           <Nav.Link
