@@ -79,7 +79,7 @@ const AddNotes = () => {
                     />
                   </div>
                 </div>
-                <sub className="text-danger">Format should be in PNG!</sub>
+                <sub className="text-danger">Format should be in PDF!</sub>
                 <div className="form-group ">
                   <input
                     type="file"

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import "./css/Contact.css";
+import "../../css/Contact.css";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { storage } from "../firebase";
+import { storage } from "../../../firebase";
 import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 
@@ -16,7 +16,7 @@ function UploadPaper() {
   const [year, setYear] = useState("");
   const [course, setCourse] = useState("");
   const token = localStorage.getItem("jwt");
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   // Toast functions
   const notifyA = (msg) => toast.error(msg);
@@ -28,29 +28,22 @@ function UploadPaper() {
     }
   }, [navigate, token]);
 
-  //fetch courses
   useEffect(() => {
-    // Fetch PDF file data from the server
-    fetch(`${process.env.REACT_APP_GLOBAL_LINK}/api/get/course`)
-      .then((response) => response.json())
-      .then((data) => {
-        setCourses(data);
-      })
-      .catch((error) => {
-        console.error("Failed to fetch PDF files:", error);
-      });
-  }, []);
+    const fetchCourses = fetch(
+      `${process.env.REACT_APP_GLOBAL_LINK}/api/get/course`
+    ).then((response) => response.json());
 
-  //fetch types
-  useEffect(() => {
-    // Fetch PDF file data from the server
-    fetch(`${process.env.REACT_APP_GLOBAL_LINK}/api/get/types`)
-      .then((response) => response.json())
-      .then((data) => {
-        setTypes(data);
+    const fetchTypes = fetch(
+      `${process.env.REACT_APP_GLOBAL_LINK}/api/get/types`
+    ).then((response) => response.json());
+
+    Promise.all([fetchCourses, fetchTypes])
+      .then(([coursesData, typesData]) => {
+        setCourses(coursesData);
+        setTypes(typesData);
       })
       .catch((error) => {
-        console.error("Failed to fetch PDF files:", error);
+        console.error("Failed to fetch data:", error);
       });
   }, []);
 
@@ -73,7 +66,7 @@ function UploadPaper() {
       notifyA("Please fill all the fields.");
       return;
     }
-    setLoading(true)
+    setLoading(true);
     const fileRef = ref(storage, `Pdf/${selectedFile.name + uuidv4()}`);
     uploadBytes(fileRef, selectedFile).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
@@ -113,10 +106,10 @@ function UploadPaper() {
           setSubject("");
           setYear("");
           setCourse("");
-          setLoading(false)
+          setLoading(false);
         } else {
           notifyA(data.error);
-          setLoading(false)
+          setLoading(false);
         }
       })
       .catch((error) => {
@@ -129,11 +122,10 @@ function UploadPaper() {
       <section id="contact" class="contact section-bg">
         <div class="container">
           <div class="section-title">
-            <h2>Upload paper</h2>
-            <p>Format should be in PDF!</p>
+            <h2>Add Question Paper</h2>
           </div>
 
-          <div class="row mt-5 justify-content-center">
+          <div class="row justify-content-center">
             <div class="col-lg-10">
               <form role="form" class="php-email-form">
                 <div class="row">
@@ -166,53 +158,55 @@ function UploadPaper() {
                     />
                   </div>
                 </div>
-                <div class="form-group mt-3">
-                  <select
-                    class="form-control"
-                    value={type}
-                    onChange={(e) => {
-                      setType(e.target.value);
-                    }}
-                  >
-                    <option value=""> Select college/university..</option>
-                    {types.length !== 0
-                      ? types.map((type) => {
-                          return (
-                            <option value={type.valuePath}>
-                              {type.valueName}
-                            </option>
-                          );
-                        })
-                      : ""}
-                  </select>
+
+                <div className="row">
+                  <div class="form-group mt-3 col-md-6">
+                    <select
+                      class="form-control rounded-0"
+                      value={type}
+                      onChange={(e) => {
+                        setType(e.target.value);
+                      }}
+                    >
+                      <option value=""> Select a College/University</option>
+                      {types.length !== 0
+                        ? types.map((type) => {
+                            return (
+                              <option value={type.valuePath}>
+                                {type.valueName}
+                              </option>
+                            );
+                          })
+                        : ""}
+                    </select>
+                  </div>
+                  <div class="form-group mt-3 col-md-6">
+                    <select
+                      class="form-control rounded-0"
+                      value={course}
+                      onChange={(e) => {
+                        setCourse(e.target.value);
+                      }}
+                    >
+                      <option value=""> Select a Course</option>
+                      {courses.length !== 0
+                        ? courses.map((course) => {
+                            return (
+                              <option value={course.coursePath}>
+                                {course.courseName}
+                              </option>
+                            );
+                          })
+                        : ""}
+                    </select>
+                  </div>
                 </div>
-                <div class="form-group mt-3">
-                  <select
-                    class="form-control"
-                    value={course}
-                    onChange={(e) => {
-                      setCourse(e.target.value);
-                    }}
-                  >
-                    <option value=""> Select Course Type..</option>
-                    {courses.length !== 0
-                      ? courses.map((course) => {
-                          return (
-                            <option value={course.coursePath}>
-                              {course.courseName}
-                            </option>
-                          );
-                        })
-                      : ""}
-                  </select>
-                </div>
-                <div class="form-group mt-3">
+                <sub className="text-danger">Format should be in PDF!</sub>
+                <div class="form-group ">
                   <input
                     type="file"
                     class="form-control"
-                    name="pdf"
-                    id="pdf"
-                    placeholder="Paper in pdf"
+                    accept=".pdf"
                     required
                     onChange={handleFileChange}
                   />
@@ -236,7 +230,7 @@ function UploadPaper() {
                       uploadFile();
                     }}
                   >
-                    {loading?"Please wait..":"Upload file"}
+                    {loading ? "Please wait.." : "Upload file"}
                   </button>
                 </div>
               </form>

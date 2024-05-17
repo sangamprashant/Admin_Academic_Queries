@@ -2,9 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 const nodemailer = require("nodemailer");
+const requiredLogin = require("../middleware/requiredLogin");
 const Contact = mongoose.model("ACADEMICQUERIESEMAIL");
 
-router.get("/api/get/contact", (req, res) => {
+router.get("/api/get/contact",requiredLogin, (req, res) => {
   Contact.find({ responded: false })
     .then((contacts) => {
       res.status(200).json(contacts);
@@ -15,7 +16,7 @@ router.get("/api/get/contact", (req, res) => {
     });
 });
 
-router.get("/api/get/contact/:id", (req, res) => {
+router.get("/api/get/contact/:id",requiredLogin, (req, res) => {
   const messageId = req.params.id;
 
   Contact.findById(messageId)
@@ -31,7 +32,7 @@ router.get("/api/get/contact/:id", (req, res) => {
     });
 });
 
-router.post("/api/reply/:id", (req, res) => {
+router.post("/api/reply/:id",requiredLogin, (req, res) => {
   const { id } = req.params;
   const { response, subject } = req.body;
 

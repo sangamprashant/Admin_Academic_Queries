@@ -32,7 +32,7 @@ function AdminNav() {
       items: [
         { label: "Add Question Paper", to: "/admin/upload" },
         { label: "Add College/University", to: "/admin/add/type" },
-        { label: "Add Course", to: "/admin/add/course" },
+        { label: "Add New Course", to: "/admin/add/course" },
         { label: "Update Paper", to: "/admin/course" },
       ],
     },
