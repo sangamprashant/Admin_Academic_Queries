@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 import "../css/ProjectsList.css";
-import AdminNav from "./AdminNav";
 
 function AdminProjectLanguageSelected() {
   const { language } = useParams();

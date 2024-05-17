@@ -3,7 +3,6 @@ import "../css/Paper.css";
 import { Link } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 import "../css/ProjectsList.css";
-import AdminNav from "./AdminNav";
 
 function AdminProjectHome() {
   const [pdfFiles, setPdfFiles] = useState([]);

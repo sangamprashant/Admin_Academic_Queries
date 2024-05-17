@@ -20,18 +20,22 @@ import AddProjectLanguage from "./Components/ReuseComponent/AddProjectLanguage";
 import AddProject from "./Components/ReuseComponent/AddProject";
 import AdminProjectHome from "./Components/ReuseComponent/AdminProjectHome";
 import AdminProjectLanguageSelected from "./Components/ReuseComponent/AdminProjectLanguageSelected";
-import AdminNav from "./Components/ReuseComponent/AdminNav";
 import TokenVerifification from "./Components/ReuseComponent/TokenVerifification";
 import AddSubject from "./Components/ReuseComponent/AddSubject";
 import UnverifiedNotes from "./Components/ReuseComponent/UnverifiedNotes";
 import VerifyNotes from "./Components/ReuseComponent/VerifyNotes";
+import AdminNav from "./Components/ReuseComponent/Navbar/AdminNav";
+import AddNotes from "./Components/ReuseComponent/Notes/AddNotes";
+import { Modal } from "antd";
 
 function App() {
   const [userLogin, setUserLogin] = useState(false);
+  const [modalOpen,setModalOpen] = React.useState(false)
+  const [modelContent,setModelContent] = React.useState(null)
   const token = localStorage.getItem("jwt");
   return (
     <BrowserRouter>
-      <LoginContext.Provider value={{ setUserLogin }}>
+      <LoginContext.Provider value={{ setUserLogin,token, handleModel }}>
         {token || userLogin ? (
           <>
             <AdminNav login={userLogin} />
@@ -52,6 +56,7 @@ function App() {
               <Route exact path="/admin/projects/:language" element={<AdminProjectLanguageSelected/>}/>
               <Route exact path="/admin/add/subject" element={<AddSubject/>}/>
               <Route exact path="/admin/unverified/subject" element={<UnverifiedNotes/>}/>
+              <Route exact path="/admin/add/notes" element={<AddNotes/>}/>
               <Route exact path="/admin/unverified/subject/:id" element={<VerifyNotes/>}/>
             </Routes>
           </>
@@ -63,9 +68,25 @@ function App() {
           </Routes>
         )}
         <ToastContainer theme="dark" />
+        <Modal
+          title="20px to Top"
+          // style={{ top: 50 }}
+          centered
+          open={modalOpen}
+          onOk={() => setModalOpen(false)}
+          onCancel={() => setModalOpen(false)}
+        >
+          {modelContent}
+      </Modal>
       </LoginContext.Provider>
     </BrowserRouter>
   );
+
+  function handleModel(content) {
+    setModalOpen(true)
+    setModelContent(content)
+  }
+
 }
 
 export default App;

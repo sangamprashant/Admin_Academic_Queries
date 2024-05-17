@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import AdminNav from "../ReuseComponent/AdminNav";
 import { toast } from "react-toastify";
 
 function GetPaperToAdmin() {

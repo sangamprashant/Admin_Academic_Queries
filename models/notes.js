@@ -4,11 +4,9 @@ const questionPaperSchema = new mongoose.Schema(
   {
     u_name: {
       type: String,
-      required: true,
     },
     u_email: {
       type: String,
-      required: true,
     },
     s_name: {
       type: String,

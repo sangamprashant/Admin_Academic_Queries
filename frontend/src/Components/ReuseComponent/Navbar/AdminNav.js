@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LoginContext } from "../../context/LoginContext";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap"; // Import Bootstrap components
+import { LoginContext } from "../../../context/LoginContext";
 
 function AdminNav() {
   const { setUserLogin } = useContext(LoginContext);
@@ -28,16 +28,16 @@ function AdminNav() {
       items: [{ label: "Responses", to: "/responses" }],
     },
     {
-      title: "Paper",
+      title: "Question Paper",
       items: [
-        { label: "Add Paper", to: "/admin/upload" },
+        { label: "Add Question Paper", to: "/admin/upload" },
         { label: "Add College/University", to: "/admin/add/type" },
         { label: "Add Course", to: "/admin/add/course" },
         { label: "Update Paper", to: "/admin/course" },
       ],
     },
     {
-      title: "Course",
+      title: "Project",
       items: [
         { label: "Add Projects", to: "/admin/add/project" },
         { label: "Edit Projects", to: "/admin/edit/project" },
@@ -45,10 +45,11 @@ function AdminNav() {
       ],
     },
     {
-      title: "Subject",
+      title: "Notes",
       items: [
+        { label: "Add Notes", to: "/admin/add/notes" },
         { label: "Add Subject", to: "/admin/add/subject" },
-        { label: "Unverified Subject", to: "/admin/unverified/subject" },
+        { label: "Unverified Notes", to: "/admin/unverified/subject" },
       ],
     },
   ];
@@ -60,7 +61,12 @@ function AdminNav() {
       variant="dark"
       className=" position-fixed w-100 z-3 px-4"
     >
-      <Navbar.Brand as={Link} to="/" className=" text-white" style={{fontSize:"30px"}}> 
+      <Navbar.Brand
+        as={Link}
+        to="/"
+        className=" text-white"
+        style={{ fontSize: "30px" }}
+      >
         Academic Queries
       </Navbar.Brand>
       <Navbar.Toggle

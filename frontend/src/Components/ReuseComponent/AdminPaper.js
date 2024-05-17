@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import "../css/Course.css";
-import AdminNav from "./AdminNav";
 import { toast } from "react-toastify";
 
 function AdminPaper() {
