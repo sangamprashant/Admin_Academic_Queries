@@ -44,14 +44,25 @@ router.post("/api/signin", (req, res) => {
 });
 // Endpoint to check email
 router.post("/api/check/email", async (req, res) => {
-  const { email } = req.body;
-  const user = await UserQuestionPaper.findOne({ email: email });
-  user.verificationToken = crypto.randomBytes(20).toString("hex");
-  await user.save();
-  await sendVerificationEmail(user.email, user.verificationToken);
-  res.status(200).json({ message: "Verification email sent." });
+  try {
+    const { email } = req.body;
+    const user = await UserQuestionPaper.findOne({ email: email });
+    if (!user)
+      return res.status(404).json({
+        success: false,
+        error: "User not found with the email",
+      });
+    user.verificationToken = crypto.randomBytes(20).toString("hex");
+    await user.save();
+    await sendVerificationEmail(user.email, user.verificationToken);
+    return res.status(200).json({ message: "Verification email sent." });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: "Server error",
+    });
+  }
 });
-
 const sendVerificationEmail = async (email, token) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -80,46 +91,73 @@ const sendVerificationEmail = async (email, token) => {
     });
   });
 };
-
-router.post("/api/verify/:token", async (req, res) => {
-  console.log(req.params.token)
-  return
+router.get("/api/verify-token/:token", async (req, res) => {
   try {
     const { token } = req.params;
-    const { password } = req.body;
-
     const user = await UserQuestionPaper.findOne({ verificationToken: token });
-
     if (!user) {
       return res
         .status(404)
-        .json({ message: "User not found for the provided token" });
+        .json({ error: "User not found for the provided token", valid: false });
     }
-
-    // Hash the new password
-  bcrypt.hash(password, 12, (error, hashedPassword) => {
-    if (error) {
-      console.log(error);
-      return res.status(500).json({ error: "Server Error" });
-    }
-
-    // Update the user's password
-    UserQuestionPaper.findOneAndUpdate({ email }, { password: hashedPassword , verificationToken:null})
-      .then((updatedUser) => {
-        if (!updatedUser) {
-          return res.status(400).json({ error: "User not found" });
-        }
-        res.json({ message: "Password reset successful" });
-      })
-      .catch((error) => {
-        console.log(error);
-        res.status(500).json({ error: "Server Error" });
-      });
-  });
-    res.status(200).json({ message: "Password updated secessfully", user });
+    res.status(200).json({
+      valid: true,
+    });
   } catch (error) {
     console.error("Error during email verification:", error);
-    res.status(500).json({ message: "Server error during email verification" });
+    res.status(500).json({ error: "Server error during verification" });
+  }
+});
+router.post("/api/reset-password", async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    if (!token || !newPassword)
+      return res.status(400).json({
+        success: false,
+        error: "The crediantials are missing",
+      });
+
+    const user = await UserQuestionPaper.findOne({ verificationToken: token });
+    if (!user)
+      return res
+        .status(404)
+        .json({
+          error: "User not found for the provided token",
+          valid: false,
+          success: false,
+        });
+
+    bcrypt.hash(newPassword, 12, (error, hashedPassword) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Server Error", success: false });
+      }
+
+      // Update the user's password
+      UserQuestionPaper.findOneAndUpdate(
+        { verificationToken: token },
+        { password: hashedPassword, verificationToken: null }
+      )
+        .then((updatedUser) => {
+          if (!updatedUser) {
+            return res
+              .status(400)
+              .json({ error: "User not found", success: false });
+          }
+          res
+            .status(200)
+            .json({ message: "Password reset successful", success: true });
+        })
+        .catch((error) => {
+          res.status(500).json({ error: "Server Error", success: false });
+        });
+    });
+  } catch (error) {
+    console.log({ error });
+    res.status(500).json({
+      success: false,
+      error: "server error",
+    });
   }
 });
 

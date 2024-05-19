@@ -1,14 +1,10 @@
-import React, { useState, useContext, useEffect } from "react";
-import "../../css/Signin.css";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { LoginContext } from "../../../context/LoginContext";
 import { SERVER } from "../../../context/config";
+import "../../css/Signin.css";
 function Signin() {
   const { setUserLogin, token, handleModel } = useContext(LoginContext);
-  // Toast functions
-  const notifyA = (msg) => toast.error(msg);
-  const notifyB = (msg) => toast.success(msg);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -83,16 +79,17 @@ function Signin() {
       .then((res) => res.json())
       .then((data) => {
         if (data.message) {
-          notifyB(data.message);
+          handleModel(<p className="text-success">{data.message}</p>);
           setUserLogin(true);
           navigate("/");
           localStorage.setItem("jwt", data.token);
           localStorage.setItem("user", JSON.stringify(data.user));
         } else {
-          notifyA(data.error);
+          handleModel(<p className="text-danger">{data.error}</p>);
         }
-        console.log(data);
-      });
+      }).catch((error)=>{
+        handleModel(<p className="text-danger">{error.response.data.error}</p>);
+      })
   }
 }
 

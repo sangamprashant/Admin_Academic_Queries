@@ -1,18 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Nav, NavDropdown, Navbar } from "react-bootstrap"; 
 import { Link, useNavigate } from "react-router-dom";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap"; // Import Bootstrap components
 import { LoginContext } from "../../../context/LoginContext";
 
 function AdminNav() {
   const { setUserLogin } = useContext(LoginContext);
   const token = localStorage.getItem("jwt");
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false); // State to manage the Navbar's collapse state
+  const [isOpen, setIsOpen] = useState(false); 
 
   useEffect(() => {
-    if (!token) {
-      navigate("/");
-    }
+    if (!token) navigate("/");
   });
 
   const handleLogout = () => {
@@ -31,8 +29,8 @@ function AdminNav() {
       title: "Question Paper",
       items: [
         { label: "Add Question Paper", to: "/admin/upload" },
-        { label: "Add College/University", to: "/admin/add/type" },
-        { label: "Add New Course", to: "/admin/add/course" },
+        { label: "Add&View College/University", to: "/admin/add/type" },
+        { label: "Add&View Course", to: "/admin/add/course" },
         { label: "Update Paper", to: "/admin/course" },
       ],
     },
@@ -41,14 +39,17 @@ function AdminNav() {
       items: [
         { label: "Projects List", to: "/admin/edit/project" },
         { label: "Add New Project", to: "/admin/add/project" },
-        { label: "Add Project Language", to: "/admin/add/project/language" },
+        {
+          label: "Add&View Project Language",
+          to: "/admin/add/project/language",
+        },
       ],
     },
     {
       title: "Notes",
       items: [
         { label: "Add Notes", to: "/admin/add/notes" },
-        { label: "Add Subject", to: "/admin/add/subject" },
+        { label: "Add&View Subject", to: "/admin/add/subject" },
       ],
     },
   ];

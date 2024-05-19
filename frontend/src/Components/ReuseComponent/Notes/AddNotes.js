@@ -1,10 +1,9 @@
 import axios from "axios";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React from "react";
-import { Button, Modal } from "antd";
-import { SERVER } from "../../../context/config";
 import { LoginContext } from "../../../context/LoginContext";
+import { SERVER } from "../../../context/config";
 import { storage } from "../../../firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const AddNotes = () => {
   const [subject, setSubject] = React.useState([]);

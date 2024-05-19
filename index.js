@@ -37,7 +37,9 @@ app.use(require("./routes/visitor"));
 app.use(require("./routes/projects"));
 app.use(require("./routes/ProjectsLanguages"));
 
-mongoose.connect(process.env.MONGO_URL);
+mongoose.connect(process.env.MONGO_URL, {
+  dbName: process.env.MONGO_DATABASE,
+});
 mongoose.connection.on("connected", () => {
   console.log("Connected to mongo");
 });
@@ -60,3 +62,51 @@ app.get("*", (req, res) => {
 http.listen(PORT, () => {
   console.log(`Server is listening on: http://localhost:${PORT} `);
 });
+
+const { MongoClient } = require("mongodb");
+
+async function migrateData() {
+  const uri = process.env.MONGO_URL; // Change this if your MongoDB instance is different
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  try {
+    await client.connect();
+    console.log("Connected to MongoDB");
+
+    const sourceDb = client.db("test");
+    const targetDb = client.db("academic_queries");
+
+    // Fetch all collection names starting with "academicqueries"
+    const collections = await sourceDb.listCollections().toArray();
+    const academicQueriesCollections = collections
+      .filter((col) => col.name.startsWith("academicqueries"))
+      .map((col) => col.name);
+
+    for (const collectionName of academicQueriesCollections) {
+      const sourceCollection = sourceDb.collection(collectionName);
+      const targetCollection = targetDb.collection(collectionName);
+
+      const documents = await sourceCollection.find().toArray();
+      if (documents.length > 0) {
+        await targetCollection.insertMany(documents);
+        console.log(
+          `Migrated ${documents.length} documents from ${collectionName}`
+        );
+      } else {
+        console.log(`No documents found in ${collectionName}`);
+      }
+    }
+
+    console.log("Data migration completed successfully");
+  } catch (error) {
+    console.error("An error occurred during data migration:", error);
+  } finally {
+    await client.close();
+    console.log("MongoDB connection closed");
+  }
+}
+
+// migrateData();
