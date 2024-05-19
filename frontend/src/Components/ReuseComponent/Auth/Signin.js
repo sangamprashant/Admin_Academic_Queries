@@ -1,52 +1,22 @@
 import React, { useState, useContext, useEffect } from "react";
-import "./css/Signin.css";
+import "../../css/Signin.css";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { LoginContext } from "../context/LoginContext";
+import { LoginContext } from "../../../context/LoginContext";
+import { SERVER } from "../../../context/config";
 function Signin() {
-  const { setUserLogin } = useContext(LoginContext);
+  const { setUserLogin, token, handleModel } = useContext(LoginContext);
   // Toast functions
   const notifyA = (msg) => toast.error(msg);
   const notifyB = (msg) => toast.success(msg);
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("jwt");
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState();
 
   useEffect(() => {
-    if (token) {
-      navigate("/");
-    }
+    if (token) navigate("/");
   });
-
-  const postData = () => {
-    // Sending data to server
-    fetch(`${process.env.REACT_APP_GLOBAL_LINK}/api/signin`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.message) {
-          notifyB(data.message);
-          setUserLogin(true);
-          navigate("/");
-          localStorage.setItem("jwt", data.token);
-          localStorage.setItem("user", JSON.stringify(data.user));
-        } else {
-          notifyA(data.error);
-        }
-        console.log(data);
-      });
-  };
 
   return (
     <div style={{ marginTop: "70px" }}>
@@ -99,6 +69,31 @@ function Signin() {
       </section>
     </div>
   );
+  function postData() {
+    fetch(`${SERVER}/api/signin`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.message) {
+          notifyB(data.message);
+          setUserLogin(true);
+          navigate("/");
+          localStorage.setItem("jwt", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+        } else {
+          notifyA(data.error);
+        }
+        console.log(data);
+      });
+  }
 }
 
 export default Signin;

@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { LoginContext } from "../../../context/LoginContext";
+import { SERVER } from "../../../context/config";
 
 function AdminEditPaper() {
   const { paperId } = useParams();
+  const { token, handleModel } = React.useContext(LoginContext);
   const [courses, setCourses] = useState([]);
   const [types, setTypes] = useState([]);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -11,88 +13,12 @@ function AdminEditPaper() {
   const [subject, setSubject] = useState("");
   const [year, setYear] = useState("");
   const [course, setCourse] = useState("");
-  const token = localStorage.getItem("jwt");
   const navigate = useNavigate();
-  useEffect(() => {
-    if (!token) {
-      navigate("/");
-    }
-  }, [navigate, token]);
 
-  useEffect(() => {
-    // Fetch the question paper by ID
-    fetch(`${process.env.REACT_APP_GLOBAL_LINK}/api/get/paper/${paperId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setPreviewUrl(data.pdfPath);
-        setSubject(data.subject);
-        setYear(data.year);
-        setType(data.type);
-        setCourse(data.course);
-      })
-      .catch((error) => {
-        console.error("Failed to fetch question paper:", error);
-      });
-  }, [paperId]);
-
-  //fetch courses
-  useEffect(() => {
-    // Fetch PDF file data from the server
-    fetch(`${process.env.REACT_APP_GLOBAL_LINK}/api/get/course`)
-      .then((response) => response.json())
-      .then((data) => {
-        setCourses(data);
-      })
-      .catch((error) => {
-        console.error("Failed to fetch PDF files:", error);
-      });
-  }, []);
-  //fetch types
-  useEffect(() => {
-    // Fetch PDF file data from the server
-    fetch(`${process.env.REACT_APP_GLOBAL_LINK}/api/get/types`)
-      .then((response) => response.json())
-      .then((data) => {
-        setTypes(data);
-      })
-      .catch((error) => {
-        console.error("Failed to fetch PDF files:", error);
-      });
-  }, []);
-
-  // Toast functions
-  const notifyA = (msg) => toast.error(msg);
-  const notifyB = (msg) => toast.success(msg);
-
-  const handleUpload = () => {
-    const requestBody = {
-      type: type,
-      subject: subject,
-      year: year,
-      course: course,
-    };
-    fetch(`${process.env.REACT_APP_GLOBAL_LINK}/api/edit/paper/${paperId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
-      body: JSON.stringify(requestBody),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.message) {
-          notifyB(data.message);
-          navigate("/admin/course");
-        } else {
-          notifyA(data.error);
-        }
-      })
-      .catch((error) => {
-        console.error("Failed to upload question paper:", error);
-      });
-  };
+  React.useLayoutEffect(() => {
+    if (!token) navigate("/");
+    else fetchData();
+  }, [navigate, token, paperId, handleModel]);
 
   return (
     <div style={{ paddingTop: "70px" }}>
@@ -200,6 +126,63 @@ function AdminEditPaper() {
       </section>
     </div>
   );
+
+  async function fetchData() {
+    try {
+      const [paperResponse, coursesResponse, typesResponse] = await Promise.all(
+        [
+          fetch(`${SERVER}/api/get/paper/${paperId}`).then((res) => res.json()),
+          fetch(`${SERVER}/api/get/course`).then((res) => res.json()),
+          fetch(`${SERVER}/api/get/types`).then((res) => res.json()),
+        ]
+      );
+
+      // Setting the state for the paper
+      setPreviewUrl(paperResponse.pdfPath);
+      setSubject(paperResponse.subject);
+      setYear(paperResponse.year);
+      setType(paperResponse.type);
+      setCourse(paperResponse.course);
+
+      // Setting the state for courses and types
+      setCourses(coursesResponse);
+      setTypes(typesResponse);
+    } catch (error) {
+      handleModel(<p>Failed to fetch data. Please try again later.</p>);
+    }
+  }
+
+  function handleUpload() {
+    const requestBody = {
+      type: type,
+      subject: subject,
+      year: year,
+      course: course,
+    };
+    fetch(`${SERVER}/api/edit/paper/${paperId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message) {
+          handleModel(<p className="text-success">{data.message}</p>);
+          navigate("/admin/course");
+        } else {
+          handleModel(<p className="text-danger">{data.error}</p>);
+        }
+      })
+      .catch((error) => {
+        // console.error("Failed to upload question paper:", error);
+        handleModel(
+          <p className="text-danger">Failed to upload question paper</p>
+        );
+      });
+  }
 }
 
 export default AdminEditPaper;

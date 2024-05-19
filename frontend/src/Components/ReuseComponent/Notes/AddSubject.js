@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Table } from "antd";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
@@ -8,7 +8,7 @@ import { LoginContext } from "../../../context/LoginContext";
 import { SERVER } from "../../../context/config";
 import { storage } from "../../../firebase";
 
-function UploadPaper() {
+function AddSubject() {
   const [pdfFiles, setPdfFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -17,55 +17,46 @@ function UploadPaper() {
   const { token, handleModel } = React.useContext(LoginContext);
   const navigate = useNavigate();
 
-  React.useLayoutEffect(() => {
-    if (token) fetchCourses();
-    else navigate("/");
+  useEffect(() => {
+    if (!token) navigate("/");
+    else fetchData();
   }, []);
 
-  let tableColumns = [
+  const subjectList = [
     {
       title: "Image",
-      dataIndex: "courseImage",
-      key: "courseImage",
-      render: (image) => {
-        return (
-          <img
-            src={image}
-            alt=""
-            height={100}
-            width={100}
-            className="object-fit-cover"
-            loading="lazy"
-          />
-        );
+      dataIndex: "subjectImage",
+      key: "subjectImage",
+      render: (link) => {
+        return <img src={link} height={100} width={100} alt="" />;
       },
     },
     {
       title: "Name",
-      dataIndex: "courseName",
-      key: "courseName",
+      dataIndex: "subjectName",
+      key: "subjectName",
     },
     {
       title: "Path",
-      dataIndex: "coursePath",
-      key: "coursePath",
+      dataIndex: "subjectPath",
+      key: "subjectPath",
     },
     {
       title: "Action",
       dataIndex: "_id",
       key: "_id",
-      render: (_id) => (
-        <div>
+      render: (_id) => {
+        return (
           <button
             className="btn btn-danger"
             onClick={() => {
               handelDelete(_id);
             }}
           >
-            Delete
+            DELETE
           </button>
-        </div>
-      ),
+        );
+      },
     },
   ];
 
@@ -74,7 +65,8 @@ function UploadPaper() {
       <section id="contact" class="contact section-bg">
         <div class="container">
           <div class="section-title">
-            <h2>Add New Course</h2>
+            <h2>Add Subject</h2>
+            
           </div>
 
           <div class="row justify-content-center">
@@ -86,7 +78,7 @@ function UploadPaper() {
                       value={inputName}
                       type="text"
                       class="form-control"
-                      placeholder="Course Name"
+                      placeholder="Subject Name"
                       required
                       onChange={(e) => {
                         setInputName(e.target.value);
@@ -97,7 +89,7 @@ function UploadPaper() {
                     <input
                       type="text"
                       class="form-control"
-                      placeholder="Paper Path"
+                      placeholder="subject Path"
                       required
                       value={inputPath}
                       onChange={(e) => {
@@ -106,14 +98,13 @@ function UploadPaper() {
                     />
                   </div>
                 </div>
-
                 <sub className="text-danger">Format should be in IMG/PNG!</sub>
-                <div className="form-group">
+                <div class="form-group ">
                   <input
                     type="file"
-                    className="form-control"
+                    class="form-control"
+                    accept=".jpg,.png,.jpeg"
                     required
-                    accept=".jpg,.jpeg,.png"
                     onChange={handleFileChange}
                   />
                 </div>
@@ -144,7 +135,7 @@ function UploadPaper() {
             <div class="sales-boxes">
               <div class="recent-sales box">
                 <div class="title">List of course</div>
-                <Table dataSource={pdfFiles} columns={tableColumns} />
+                <Table dataSource={pdfFiles} columns={subjectList} />
               </div>
             </div>
           </div>
@@ -153,51 +144,19 @@ function UploadPaper() {
     </div>
   );
 
-  function fetchCourses() {
-    // Fetch PDF file data from the server
-    fetch(`${SERVER}/api/get/course`)
+  function fetchData() {
+    fetch(`${SERVER}/api/get/subject/names`)
       .then((response) => response.json())
       .then((data) => {
-        console.log({ data });
         setPdfFiles(data);
       })
       .catch((error) => {
         console.error("Failed to fetch PDF files:", error);
-      });
-  }
-
-  function handelDelete(id) {
-    // Send a DELETE request to the server to delete the question paper
-    fetch(`${SERVER}/api/course/delete/by/admin/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.message) {
-          handleModel(
-            <p className="p-0 m-0 text-success">
-              {data.message || "Course deleted."}
-            </p>
-          );
-          // Remove the deleted paper from the pdfFiles state
-          setPdfFiles((prevFiles) =>
-            prevFiles.filter((file) => file._id !== id)
-          );
-        } else {
-          handleModel(
-            <p className="p-0 m-0 text-danger">
-              {data.error || "Failed to delete."}
-            </p>
-          );
-        }
-      })
-      .catch((error) => {
-        console.error("Failed to delete question paper:", error);
-        handleModel(<p className="p-0 m-0 text-danger">Failed to delete</p>);
+        handleModel(
+          <p className="text-danger">
+            Failed to fetch data. Please try again later.
+          </p>
+        );
       });
   }
 
@@ -218,13 +177,12 @@ function UploadPaper() {
   function uploadFile() {
     if (!selectedFile || !inputName || !inputPath) {
       return handleModel(
-        <p className="p-0 m-0 text-danger">Please fill all the fields.</p>
+        <p className="text-danger">Please fill all the fields.</p>
       );
     }
     const fileRef = ref(storage, `image/${selectedFile.name + uuidv4()}`);
     uploadBytes(fileRef, selectedFile).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
-        // Send the download URL to your server for storage in MongoDB
         handleUpload(url);
       });
     });
@@ -233,15 +191,15 @@ function UploadPaper() {
   function handleUpload(url) {
     if (!selectedFile || !inputName || !inputPath) {
       return handleModel(
-        <p className="p-0 m-0 text-danger">Please fill all the fields.</p>
+        <p className="text-danger">Please fill all the fields.</p>
       );
     }
     const requestBody = {
-      courseImage: url,
-      coursePath: inputPath,
-      courseName: inputName,
+      subjectImage: url,
+      subjectPath: inputPath.trim(),
+      subjectName: inputName.trim(),
     };
-    fetch(`${SERVER}/api/add/course`, {
+    fetch(`${SERVER}/api/create/subject-names`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -252,22 +210,46 @@ function UploadPaper() {
       .then((response) => response.json())
       .then((data) => {
         if (data.message) {
-          handleModel(<p className="p-0 m-0 text-success">{data.message}</p>);
+          handleModel(<p className="text-success">{data.message}</p>);
           setSelectedFile(null);
           setPreviewUrl(null);
           setInputName("");
           setInputPath("");
         } else {
-          handleModel(<p className="p-0 m-0 text-danger">{data.error}</p>);
+          handleModel(<p className="text-danger">{data.error}</p>);
         }
       })
       .catch((error) => {
-        console.error("Failed to upload question paper:", error);
-        handleModel(
-          <p className="p-0 m-0 text-danger">Failed to add course</p>
-        );
+        handleModel(<p className="text-danger">Failed to add subject.</p>);
       });
+  }
+
+  function handelDelete(id) {
+    const yes = window.confirm("Are you sure you want to delete.");
+    if (yes) {
+      fetch(`${SERVER}/api/course/delete/by/admin/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.message) {
+            handleModel(<p className="text-success">{data.message}</p>);
+            setPdfFiles((prevFiles) =>
+              prevFiles.filter((file) => file._id !== id)
+            );
+          } else {
+            handleModel(<p className="text-danger">{data.error}</p>);
+          }
+        })
+        .catch((error) => {
+          handleModel(<p className="text-danger">Failed to delete subject.</p>);
+        });
+    }
   }
 }
 
-export default UploadPaper;
+export default AddSubject;

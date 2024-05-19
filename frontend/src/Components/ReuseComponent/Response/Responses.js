@@ -4,6 +4,7 @@ import { LoginContext } from "../../../context/LoginContext";
 import { Tabs } from "antd";
 import ResponseMessage from "./ResponseMessage";
 import ResponsePaper from "./ResponsePaper";
+import UnverifiedNotes from "./UnverifiedNotes";
 
 function Responses() {
   const { token } = useContext(LoginContext);
@@ -23,6 +24,11 @@ function Responses() {
       label: `Paper`,
       key: "1",
       children: <ResponsePaper />,
+    },
+    {
+      label: `Notes`,
+      key: "2",
+      children: <UnverifiedNotes />,
     },
   ];
 

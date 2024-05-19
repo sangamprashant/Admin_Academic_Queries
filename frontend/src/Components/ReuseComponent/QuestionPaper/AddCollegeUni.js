@@ -1,8 +1,8 @@
+import { Table } from "antd";
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../../context/LoginContext";
 import { SERVER } from "../../../context/config";
-import { Table } from "antd";
 
 function AddType() {
   const { token, handleModel } = React.useContext(LoginContext);

@@ -39,8 +39,8 @@ function AdminNav() {
     {
       title: "Project",
       items: [
-        { label: "Add Projects", to: "/admin/add/project" },
-        { label: "Edit Projects", to: "/admin/edit/project" },
+        { label: "Projects List", to: "/admin/edit/project" },
+        { label: "Add New Project", to: "/admin/add/project" },
         { label: "Add Project Language", to: "/admin/add/project/language" },
       ],
     },
@@ -49,7 +49,6 @@ function AdminNav() {
       items: [
         { label: "Add Notes", to: "/admin/add/notes" },
         { label: "Add Subject", to: "/admin/add/subject" },
-        { label: "Unverified Notes", to: "/admin/unverified/subject" },
       ],
     },
   ];

@@ -1,32 +1,23 @@
-import React, { useEffect, useState } from "react";
-import "../css/Paper.css";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
 import { Spinner } from "react-bootstrap";
-import "../css/ProjectsList.css";
+import { Link } from "react-router-dom";
+import { SERVER } from "../../../context/config";
+import "../../css/Paper.css";
+import "../../css/ProjectsList.css";
 
 function AdminProjectHome() {
   const [pdfFiles, setPdfFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Fetch PDF file data from the server
-    fetch(`${process.env.REACT_APP_GLOBAL_LINK}/api/project/languages`)
-      .then((response) => response.json())
-      .then((data) => {
-        setPdfFiles(data);
-        setIsLoading(false); // Turn off loading state when data is fetched
-      })
-      .catch((error) => {
-        console.error("Failed to fetch PDF files:", error);
-        setIsLoading(false); // Turn off loading state in case of an error
-      });
+  React.useLayoutEffect(() => {
+    fetchProjects();
   }, []);
   return (
     <div style={{ paddingTop: "70px" }}>
       <section id="portfolio" className="portfolio">
         <div className="container">
           <div className="section-title">
-            <h2>Admin Projects</h2>
+            <h2>Project's List</h2>
           </div>
           <div className="language-container">
             {isLoading ? (
@@ -64,6 +55,19 @@ function AdminProjectHome() {
       </section>
     </div>
   );
+  function fetchProjects() {
+    // Fetch PDF file data from the server
+    fetch(`${SERVER}/api/project/languages`)
+      .then((response) => response.json())
+      .then((data) => {
+        setPdfFiles(data);
+        setIsLoading(false); // Turn off loading state when data is fetched
+      })
+      .catch((error) => {
+        console.error("Failed to fetch PDF files:", error);
+        setIsLoading(false); // Turn off loading state in case of an error
+      });
+  }
 }
 
 export default AdminProjectHome;

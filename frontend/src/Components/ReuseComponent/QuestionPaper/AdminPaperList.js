@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import "../../css/Course.css";
-import { SERVER } from "../../../context/config";
-import { LoginContext } from "../../../context/LoginContext";
 import { Table } from "antd";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { LoginContext } from "../../../context/LoginContext";
+import { SERVER } from "../../../context/config";
+import "../../css/Course.css";
 
 function AdminPaper() {
   const { branch, course } = useParams();

@@ -40,7 +40,7 @@ const AddNotes = () => {
             <h2>Add Notes</h2>
           </div>
 
-          <div className="row justify-content-center mt-5">
+          <div className="row justify-content-center">
             <div className="col-lg-10">
               <form role="form" className="php-email-form">
                 <div className="row">
