@@ -2,10 +2,7 @@ const mongoose = require("mongoose");
 
 const CoursequestionPaperSchema = new mongoose.Schema(
   {
-    counts: {
-      type: [String],
-      default: ["adadw"], // Initialize with "adadw" on the first visit
-    },
+    count: Number,
   },
   { timestamps: true } // Add the timestamps option
 );

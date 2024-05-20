@@ -17,9 +17,16 @@ router.get("/api/subject-notes/unverified", requiredLogin, async (req, res) => {
   }
 });
 // Route to get a subject by ID
-router.get("/api/subjects-notes/:id", async (req, res) => {
+router.get("/api/subjects-note/:id", async (req, res) => {
   try {
-    const subjectId = req.params.id;
+    const { id: subjectId } = req.params;
+    if (!subjectId) {
+      return res
+        .status(404)
+        .json({
+          error: "Insufficient data, please go back and select valid subject",
+        });
+    }
     const subject = await SubjectNotes.findById(subjectId);
     if (!subject) {
       return res.status(404).json({ error: "Subject not found" });
@@ -69,21 +76,34 @@ router.post("/api/admin/upload/notes", requiredLogin, async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
-// // Route to get subject notes by s_name where valid is true
-// router.get("/api/subject-notes/:s_name", async (req, res) => {
-//   try {
-//     const s_name = req.params.s_name;
-
-//     // Retrieve subject notes with the specified s_name and valid is true
-//     const subjectNotes = await SubjectNotes.find({ s_name, valid: true });
-
-//     // Respond with the subject notes
-//     res.status(200).json(subjectNotes);
-//   } catch (error) {
-//     console.error("Failed to retrieve subject notes:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
+// Route to get subject notes by s_name where valid is true
+router.get("/api/subject-notes/:s_name", async (req, res) => {
+  try {
+    const { s_name } = req.params;
+    const subjectNotes = await SubjectNotes.find({ s_name, valid: true });
+    res.status(200).json({ notes: subjectNotes, success: true });
+  } catch (error) {
+    console.error("Failed to retrieve subject notes:", error);
+    res.status(500).json({ error: "Internal Server Error", success: false });
+  }
+});
+// Route to delete subject notes by ID
+router.delete("/api/subject-notes/:id", requiredLogin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedSubjectNotes = await SubjectNotes.findByIdAndDelete(id);
+    if (!deletedSubjectNotes) {
+      return res
+        .status(404)
+        .json({ message: "Subject notes not found", success: false });
+    }
+    res
+      .status(200)
+      .json({ message: "Subject notes deleted successfully", success: true });
+  } catch (error) {
+    console.error("Failed to delete subject notes:", error);
+    res.status(500).json({ message: "Internal Server Error", success: false });
+  }
+});
 
 module.exports = router;

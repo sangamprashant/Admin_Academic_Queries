@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "antd";
+import { Image, Table } from "antd";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import { SERVER } from "../../../context/config";
@@ -21,7 +21,7 @@ function AddProjectLanguage() {
   useEffect(() => {
     if (!token) navigate("/");
     else fetchData();
-  },[]);
+  }, []);
 
   const tableColumns = [
     {
@@ -29,7 +29,9 @@ function AddProjectLanguage() {
       dataIndex: "ProjectImage",
       key: "ProjectImage",
       render: (link) => {
-        return <img src={link} alt="project photo" height={100} width={100} />;
+        return (
+          <Image src={link} alt="project photo" height={100} width={100} />
+        );
       },
     },
     {
@@ -39,17 +41,26 @@ function AddProjectLanguage() {
     },
     {
       title: "Action",
-      dataIndex: "_id",
-      key: "_id",
-      render: (_id) => {
+      dataIndex: "",
+      key: "data._id",
+      render: (data) => {
         return (
-          <div
-            className="btn btn-danger"
-            onClick={() => {
-              handelDelete(_id);
-            }}
-          >
-            Delete
+          <div className="d-flex gap-2">
+            <Link
+              className="btn btn-primary "
+              to={`/admin/projects/${data.ProjectName}`}
+            >
+              View
+            </Link>
+            <button
+              type="button"
+              className="btn btn-danger"
+              onClick={() => {
+                handelDelete(data._id);
+              }}
+            >
+              Delete
+            </button>
           </div>
         );
       },

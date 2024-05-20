@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Table } from "antd";
+import { Image, Table } from "antd";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
@@ -29,7 +29,7 @@ function UploadPaper() {
       key: "courseImage",
       render: (image) => {
         return (
-          <img
+          <Image
             src={image}
             alt=""
             height={100}

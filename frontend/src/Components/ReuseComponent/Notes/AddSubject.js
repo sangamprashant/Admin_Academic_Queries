@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-import { Table } from "antd";
+import { Image, Table } from "antd";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { LoginContext } from "../../../context/LoginContext";
 import { SERVER } from "../../../context/config";
@@ -28,7 +28,9 @@ function AddSubject() {
       dataIndex: "subjectImage",
       key: "subjectImage",
       render: (link) => {
-        return <img src={link} height={100} width={100} alt="" />;
+        return (
+          <Image src={link} height={100} width={100} alt="" loading="lazy" />
+        );
       },
     },
     {
@@ -43,18 +45,26 @@ function AddSubject() {
     },
     {
       title: "Action",
-      dataIndex: "_id",
-      key: "_id",
-      render: (_id) => {
+      dataIndex: "",
+      key: "data._id",
+      render: (data) => {
         return (
-          <button
-            className="btn btn-danger"
-            onClick={() => {
-              handelDelete(_id);
-            }}
-          >
-            DELETE
-          </button>
+          <div className="d-flex gap-2">
+            <Link
+              className="btn btn-primary"
+              to={`/admin/view/notes/${data.subjectPath}`}
+            >
+              View
+            </Link>
+            <button
+              className="btn btn-danger"
+              onClick={() => {
+                handelDelete(data._id);
+              }}
+            >
+              Delete
+            </button>
+          </div>
         );
       },
     },
@@ -66,7 +76,6 @@ function AddSubject() {
         <div class="container">
           <div class="section-title">
             <h2>Add Subject</h2>
-            
           </div>
 
           <div class="row justify-content-center">

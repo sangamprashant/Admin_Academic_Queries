@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { LoginContext } from "../../../context/LoginContext";
 import { SERVER } from "../../../context/config";
 import { storage } from "../../../firebase";
+import { Image } from "antd";
 
 function AddProject() {
   const [types, setTypes] = useState([]); //fetched languages
@@ -133,7 +134,7 @@ function AddProject() {
                       <p>Selected images</p>
                       <div className="project-input-image">
                         {images.map((image, index) => (
-                          <img
+                          <Image
                             key={index}
                             src={URL.createObjectURL(image.file)}
                             alt={`Selected Image ${index}`}

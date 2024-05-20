@@ -20,7 +20,6 @@ import AddProject from "./Components/ReuseComponent/Project/AddProject";
 import AdminProjectLanguageSelected from "./Components/ReuseComponent/Project/AdminProjectLanguageSelected";
 import TokenVerifification from "./Components/ReuseComponent/Auth/TokenVerifification";
 import AddSubject from "./Components/ReuseComponent/Notes/AddSubject";
-import UnverifiedNotes from "./Components/ReuseComponent/Response/UnverifiedNotes";
 import VerifyNotes from "./Components/ReuseComponent/Response/VerifyNotes";
 import AdminNav from "./Components/ReuseComponent/Navbar/AdminNav";
 import AddNotes from "./Components/ReuseComponent/Notes/AddNotes";
@@ -28,6 +27,8 @@ import { Modal } from "antd";
 import AdminProjectHome from "./Components/ReuseComponent/Project/AdminProjectHome";
 import AddProjectLanguage from "./Components/ReuseComponent/Project/AddProjectLanguage";
 import PageNotFound from "./Components/ReuseComponent/PageNotFound";
+import OpenSubjectSelected from "./Components/ReuseComponent/Notes/OpenSubjectSelected";
+import OpenNote from "./Components/ReuseComponent/Notes/OpenNote";
 
 function App() {
   const [userLogin, setUserLogin] = useState(localStorage.getItem("jwt")? true:false);
@@ -57,8 +58,10 @@ function App() {
               <Route exact path="/admin/projects/:language" element={<AdminProjectLanguageSelected/>}/>
               <Route exact path="/admin/add/subject" element={<AddSubject/>}/>
               <Route exact path="/admin/unverified/subject/:id" element={<VerifyNotes/>}/>
-
               <Route exact path="/admin/add/notes" element={<AddNotes/>}/>
+              <Route exact path="/admin/view/notes/:name" element={<OpenSubjectSelected/>}/>
+              <Route exact path="/admin/view/notes/:name/:id" element={<OpenNote/>}/>
+
               <Route exact path="*" element={<PageNotFound/>}/>
             </Routes>
           </>
