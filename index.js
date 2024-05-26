@@ -28,6 +28,7 @@ require("./models/projects");
 require("./models/projectLanguage");
 app.use(require("./routes/paper"));
 app.use(require("./routes/admin"));
+app.use(require("./routes/appLinks"));
 app.use(require("./routes/type"));
 app.use(require("./routes/course"));
 app.use(require("./routes/email"));

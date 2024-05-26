@@ -29,6 +29,7 @@ import AddProjectLanguage from "./Components/ReuseComponent/Project/AddProjectLa
 import PageNotFound from "./Components/ReuseComponent/PageNotFound";
 import OpenSubjectSelected from "./Components/ReuseComponent/Notes/OpenSubjectSelected";
 import OpenNote from "./Components/ReuseComponent/Notes/OpenNote";
+import Applink from "./Components/ReuseComponent/AppLink";
 
 function App() {
   const [userLogin, setUserLogin] = useState(localStorage.getItem("jwt")? true:false);
@@ -61,6 +62,7 @@ function App() {
               <Route exact path="/admin/add/notes" element={<AddNotes/>}/>
               <Route exact path="/admin/view/notes/:name" element={<OpenSubjectSelected/>}/>
               <Route exact path="/admin/view/notes/:name/:id" element={<OpenNote/>}/>
+              <Route exact path="/admin/app-links" element={<Applink/>}/>
 
               <Route exact path="*" element={<PageNotFound/>}/>
             </Routes>

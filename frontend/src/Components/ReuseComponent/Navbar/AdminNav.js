@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Nav, NavDropdown, Navbar } from "react-bootstrap"; 
+import { Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { LoginContext } from "../../../context/LoginContext";
 
@@ -7,7 +7,7 @@ function AdminNav() {
   const { setUserLogin } = useContext(LoginContext);
   const token = localStorage.getItem("jwt");
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false); 
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (!token) navigate("/");
@@ -88,6 +88,7 @@ function AdminNav() {
               ))}
             </NavDropdown>
           ))}
+          <Link className="nav-link" to="/admin/app-links" >App link</Link>
           <Nav.Link
             onClick={() => {
               handleLogout();
