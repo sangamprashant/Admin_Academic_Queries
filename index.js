@@ -18,6 +18,7 @@ app.use(express.json());
 
 require("./models/paper");
 require("./models/Admin");
+require("./models/appLinks");
 require("./models/type");
 require("./models/course");
 require("./models/email");

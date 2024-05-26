@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 const requireLogin = require("../middleware/requiredLogin");
-const AppLink = require("../models/appLinks");
+const AppLink = mongoose.model("ACADEMICQUERIESAPPLINKS");
 
 // Create a new app link
 router.post("/api/app-links/create", requireLogin, async (req, res) => {
